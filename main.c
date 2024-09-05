@@ -6,18 +6,24 @@ int main(void) {
 	task t;
 	t.info = "beans";
 
+	task a;
+	a.info = "this is task 2";
+
+	task b;
+	b.info = "QWERTYUIOP";
+
 	group g;
-	g.task_count = 1;
-	g.title = "group titel";
+	initialize_group(&g, "group title");
 
-	g.tasks = (task*)malloc(sizeof(task) * g.task_count);
+	add_task_to_group(&g, &t);
+	add_task_to_group(&g, &a);
+	add_task_to_group(&g, &b);
 
-	g.tasks[0] = t;
-
-	printf("g.tasks[0].info is %s", g.tasks[0].info);
-
+	printf("g.tasks[0].info is %s\n", g.tasks[0].info);
+	printf("g.tasks[1].info is %s\n", g.tasks[1].info);
+	printf("g.tasks[2].info is %s\n", g.tasks[2].info);
 	free(g.tasks);
 
 	printf("\n");
-	return 0;
+	return EXIT_SUCCESS;
 }
