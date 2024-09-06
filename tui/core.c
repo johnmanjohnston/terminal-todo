@@ -27,8 +27,10 @@ void reset_terminal_config(void) {
   term.c_lflag |= ICANON | ECHO;
   tcsetattr(STDIN_FILENO, TCSANOW, &term);
 
-  printf("\e[?25h");
+  printf("\e[?25h"); // hide cursor
 }
+
+void clear_terminal() { printf("\e[1;1H\e[2J"); }
 
 unsigned int get_terminal_height() {
   struct winsize w;

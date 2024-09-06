@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+void testfunc(void) { printf("this is called from testfunc()"); }
+
 int main(void) {
   // task t;
   // t.info = "beans";
@@ -26,8 +28,12 @@ int main(void) {
   // printf("g.tasks[1].info is %s\n", g.tasks[1].info);
   // printf("g.tasks[2].info is %s\n", g.tasks[2].info);
   // free(g.tasks);
-
   set_terminal_config();
+  clear_terminal();
+
+  input_handler ih;
+  ih.callback = testfunc;
+  // ih.callback();
 
   int tick = 0;
   char key = 0;
@@ -41,8 +47,10 @@ int main(void) {
     if (key == 'q')
       break;
 
-    if (key > 0)
+    if (key > 0) {
+      ih.callback();
       numKeys++;
+    }
 
     set_cursor_position(20, 20);
     printf("num keys: %i", numKeys);
