@@ -35,6 +35,9 @@ int main(void) {
   label l;
   // l.cdata.x = 5;
   // l.cdata.y = 7;
+  // l.cdata.render = render_label;
+
+  initialize_component(&l, 0x1);
   position_component(&l.cdata, 5, 7);
   l.text = "this is some text inside a label";
 
@@ -46,9 +49,11 @@ int main(void) {
   char key = 0;
 
   int numKeys = 0;
-
+  // render(&l, 0x1);
   set_cursor_position(l.cdata.x, l.cdata.y);
-  printf("%s", l.text);
+  // printf("%s", l.text);
+
+  // l.cdata.render(l);
 
   while (1) {
     tick++;
@@ -60,7 +65,10 @@ int main(void) {
     if (key > 0) {
       ih.callback();
       numKeys++;
+      render(l.cdata);
     }
+
+    // render(l.cdata);
 
     set_cursor_position(20, 20);
     printf("num keys: %i", numKeys);
