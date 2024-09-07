@@ -1,3 +1,4 @@
+#include "tui/component.h"
 #include "tui/core.h"
 #include "tui/input.h"
 #include "types.h"
@@ -31,6 +32,12 @@ int main(void) {
   set_terminal_config();
   clear_terminal();
 
+  label l;
+  // l.cdata.x = 5;
+  // l.cdata.y = 7;
+  position_component(&l.cdata, 5, 7);
+  l.text = "this is some text inside a label";
+
   input_handler ih;
   ih.callback = testfunc;
   // ih.callback();
@@ -39,6 +46,9 @@ int main(void) {
   char key = 0;
 
   int numKeys = 0;
+
+  set_cursor_position(l.cdata.x, l.cdata.y);
+  printf("%s", l.text);
 
   while (1) {
     tick++;
