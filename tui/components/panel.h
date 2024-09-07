@@ -3,7 +3,8 @@
 
 typedef struct {
     struct component_data cdata;
-    char *text;
-} label;
+    int width;
+    int height;
+} panel;
 
-void render_label(label l);
+void render_panel(panel p);
