@@ -65,6 +65,7 @@ int main(void) {
     if (key > 0) {
       ih.callback();
       numKeys++;
+
       render(l.cdata);
     }
 

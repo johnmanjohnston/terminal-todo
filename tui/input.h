@@ -1,4 +1,4 @@
-int input_loop(void);
+char input_loop(void);
 
 typedef struct {
   int keycode;
