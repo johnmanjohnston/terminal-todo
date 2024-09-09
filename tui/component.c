@@ -22,7 +22,17 @@ void render(struct component_data c) {
         render_label(*((label *)(c.full_component)));
     }
 
-    if (c.component_typecode == TYPECODE_PANEL) {
+    else if (c.component_typecode == TYPECODE_PANEL) {
         render_panel(*((panel *)(c.full_component)));
+    }
+}
+
+void expurgate(struct component_data c) {
+    if (c.component_typecode == TYPECODE_LABEL) {
+        // TODO: create erasure function for label
+    }
+
+    else if (c.component_typecode == TYPECODE_PANEL) {
+        erase_panel(*((panel *)(c.full_component)));
     }
 }

@@ -38,8 +38,10 @@ int main(void) {
     l.text = "this is some text inside a label";
 
     panel p;
-    initialize_component(&l, 0x2);
-    position_component(&p.cdata, 12, 2);
+    initialize_component(&p, 0x2);
+    position_component(&p.cdata, 52, 30);
+    p.height = 5;
+    p.width = 7;
 
     input_handler ih;
     ih.callback = testfunc;
@@ -66,11 +68,13 @@ int main(void) {
             ih.callback();
             numKeys++;
 
-            render(p.cdata);
-            render(l.cdata);
-        }
+            expurgate(p.cdata);
 
-        // render(l.cdata);
+            p.width++;
+
+            render(l.cdata);
+            render(p.cdata);
+        }
 
         set_cursor_position(20, 20);
         printf("num keys: %i", numKeys);
