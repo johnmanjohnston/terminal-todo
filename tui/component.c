@@ -1,4 +1,7 @@
 #include "component.h"
+#include "components/base.h"
+#include "components/label.h"
+#include "components/panel.h"
 #include "core.h"
 
 // using hex makes me feel cool
@@ -17,7 +20,8 @@ void initialize_component(void *c, int typecode) {
     }
 }
 
-void render(struct component_data c) {
+void render(void *component) {
+    struct component_data c = *(struct component_data *)component;
     if (c.component_typecode == TYPECODE_LABEL) {
         render_label(*((label *)(c.full_component)));
     }

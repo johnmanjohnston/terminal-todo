@@ -1,7 +1,6 @@
 #pragma once
-#include "components/label.h"
-#include "components/panel.h"
+#include "components/base.h"
 
 void initialize_component(void *c, int typecode);
-void render(struct component_data c);
+void render(void *component);
 void expurgate(struct component_data c);

@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "tui/components/label.h"
+#include "tui/components/panel.h"
+
 void testfunc(void) { printf("this is called from testfunc()"); }
 
 int main(void) {
@@ -72,8 +75,8 @@ int main(void) {
 
             p.width++;
 
-            render(l.cdata);
-            render(p.cdata);
+            render(&l);
+            render(&p);
         }
 
         set_cursor_position(20, 20);
