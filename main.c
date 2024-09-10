@@ -42,7 +42,7 @@ int main(void) {
 
     panel p;
     initialize_component(&p, 0x2);
-    position_component(&p.cdata, 52, 30);
+    position_component(&p.cdata, 52, 20);
     p.height = 5;
     p.width = 7;
 
@@ -55,7 +55,6 @@ int main(void) {
 
     int numKeys = 0;
     // render(&l, 0x1);
-    set_cursor_position(l.cdata.x, l.cdata.y);
     // printf("%s", l.text);
 
     // l.cdata.render(l);
@@ -71,7 +70,7 @@ int main(void) {
             ih.callback();
             numKeys++;
 
-            expurgate(p.cdata);
+            expurgate(&p);
 
             p.width++;
 

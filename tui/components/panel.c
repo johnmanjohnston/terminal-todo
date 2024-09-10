@@ -38,20 +38,13 @@ void render_panel(panel p) {
 }
 
 void erase_panel(panel p) {
-    // FIX: OPTIMIZE THIS. THIS IS A QUICK VERY BAD SOLUTION ADDED AS A
-    // TEMPORARY THING
+    // erase top line and top corners
     set_cursor_position(p.cdata.x, p.cdata.y);
-
     for (int i = 0; i < p.width; i++) {
-        if (i == 0)
-            printf(" ");
-        else if (i == p.width - 1)
-            printf(" ");
-        else
-            printf(" ");
+        printf(" ");
     }
 
-    // draw side lines
+    // erase side lines
     for (int i = 0; i < p.height; i++) {
         set_cursor_position(p.cdata.x, p.cdata.y + i + 1);
         printf(" ");
@@ -60,14 +53,9 @@ void erase_panel(panel p) {
         printf(" ");
     }
 
-    // draw bottom line and bottom corners
+    // erase bottom line and bottom corners
     set_cursor_position(p.cdata.x, p.cdata.y + p.height + 1);
     for (int i = 0; i < p.width; i++) {
-        if (i == 0)
-            printf(" ");
-        else if (i == p.width - 1)
-            printf(" ");
-        else
-            printf(" ");
+        printf(" ");
     }
 }
