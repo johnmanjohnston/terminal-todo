@@ -76,6 +76,8 @@ int main(void) {
 
             render(&l);
             render(&p);
+
+            expurgate(&l);
         }
 
         set_cursor_position(20, 20);

@@ -37,7 +37,7 @@ void expurgate(void *component) {
     struct component_data c = *component_to_cdata(component);
 
     if (c.component_typecode == TYPECODE_LABEL) {
-        // TODO: create erasure function for label
+        erase_label(*(label *)(c.full_component));
     }
 
     else if (c.component_typecode == TYPECODE_PANEL) {

@@ -6,4 +6,5 @@ typedef struct {
     char *text;
 } label;
 
+void erase_label(label l);
 void render_label(label l);
