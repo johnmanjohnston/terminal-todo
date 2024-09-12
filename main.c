@@ -1,4 +1,5 @@
 #include "tui/component.h"
+#include "tui/components/base.h"
 #include "tui/core.h"
 #include "tui/input.h"
 #include "types.h"
@@ -8,6 +9,7 @@
 
 #include "tui/components/label.h"
 #include "tui/components/panel.h"
+#include "tui/components/textbox.h"
 
 void testfunc(void) { printf("this is called from testfunc()"); }
 
@@ -46,6 +48,11 @@ int main(void) {
     p.height = 5;
     p.width = 7;
 
+    textbox tbox;
+    initialize_component(&tbox, 0x3);
+    position_component(&tbox.cdata, 30, 30);
+    // tbox.text = "this is textbox text";
+
     input_handler ih;
     ih.callback = testfunc;
     // ih.callback();
@@ -63,8 +70,10 @@ int main(void) {
         tick++;
         key = input_loop();
 
-        if (key == 'q')
+        if (key == 'q') {
+            release_textbox_resources(&tbox);
             break;
+        }
 
         if (key > 0) {
             ih.callback();
@@ -72,12 +81,20 @@ int main(void) {
 
             expurgate(&p);
 
+            tbox.cdata.handle_key_input(&tbox, key);
+
             p.width++;
+
+            set_cursor_position(0, 0);
 
             render(&l);
             render(&p);
+            render(&tbox);
 
-            expurgate(&l);
+            if (key == 'p') {
+                expurgate(&tbox);
+                expurgate(&l);
+            }
         }
 
         set_cursor_position(20, 20);
