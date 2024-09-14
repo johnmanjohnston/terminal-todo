@@ -4,22 +4,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TEXTBOX_BUFFER_SIZE 32
+#define TEXTBOX_BUFFER_SIZE 128
 
 void initialize_textbox(textbox *t) {
-    t->text = malloc(sizeof(char) * TEXTBOX_BUFFER_SIZE); // *sigh*
+    t->text = malloc(TEXTBOX_BUFFER_SIZE); // *sigh*
+
+    t->text[0] = '\0';
+    if (t->text == NULL) {
+        set_cursor_position(16, 16);
+        printf("T->TEXT COULD NOT ALLOCATE MEMORY");
+    }
 }
 
 void handle_textbox_key_input(void *component, char key) {
     textbox *t = ((textbox *)(component));
     set_cursor_position(0, 0);
 
-    // t->text = &key;
+    int text_length = strlen(t->text);
 
-    strcpy(t->text, &key);
+    // handle backspace
+    if ((int)key == 127 && text_length > 0) {
+        t->text[strlen(t->text) - 1] = '\0';
+        return;
+    }
 
-    printf("key input detected: %s typecode is %i", &key,
-           t->cdata.component_typecode);
+    // prevent buffer overflow
+    if (text_length < TEXTBOX_BUFFER_SIZE - 1) {
+        // strcat(t->text, &key);
+        t->text[text_length] = key;
+        t->text[text_length + 1] = '\0';
+
+        printf("length of text is %d, the latest charcode is %d",
+               (int)(strlen(t->text)), (int)key);
+    } else {
+        printf("textbox text exceeding buffer size");
+    }
 }
 
 void render_textbox(textbox t) {

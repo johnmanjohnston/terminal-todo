@@ -5,6 +5,7 @@
 #include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "tui/components/label.h"
@@ -71,6 +72,19 @@ int main(void) {
         key = input_loop();
 
         if (key == 'q') {
+
+            FILE *fptr;
+            fptr = fopen("../tasks.txt", "w");
+
+            if (fptr == NULL) {
+                set_cursor_position(1, 1);
+                printf("fptr is NULL");
+            } else {
+                // fprintf(fptr, "%s", tbox.text);
+                // fwrite(tbox.text, 1, strlen(tbox.text), fptr);
+                fputs(tbox.text, fptr);
+                fclose(fptr);
+            }
             release_textbox_resources(&tbox);
             break;
         }
