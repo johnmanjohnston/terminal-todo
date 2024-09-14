@@ -34,11 +34,11 @@ void clear_terminal() { printf("\e[1;1H\e[2J"); }
 unsigned int get_terminal_height() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    return w.ws_col;
+    return w.ws_row;
 }
 
 unsigned int get_terminal_width() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    return w.ws_row;
+    return w.ws_col;
 }

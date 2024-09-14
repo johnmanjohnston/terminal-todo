@@ -1,3 +1,4 @@
+#include "tui/color.h"
 #include "tui/component.h"
 #include "tui/components/base.h"
 #include "tui/core.h"
@@ -45,7 +46,7 @@ int main(void) {
 
     panel p;
     initialize_component(&p, 0x2);
-    position_component(&p.cdata, 52, 20);
+    position_component(&p.cdata, (get_terminal_width() / 2), 20);
     p.height = 5;
     p.width = 7;
 
@@ -65,12 +66,14 @@ int main(void) {
     // render(&l, 0x1);
     // printf("%s", l.text);
 
-    // l.cdata.render(l);
+    fill_with_color(hex_c(0x282828)); // 0x282828
+    set_text_color(hex_c(0xCC241D));  // 0xCC241D
 
+    // l.cdata.render(l);
     while (1) {
         tick++;
         key = input_loop();
-
+        position_component(&p.cdata, (get_terminal_width() / 2), 20);
         if (key == 'q') {
 
             FILE *fptr;
@@ -110,7 +113,6 @@ int main(void) {
                 expurgate(&l);
             }
         }
-
         set_cursor_position(20, 20);
         printf("num keys: %i", numKeys);
 
