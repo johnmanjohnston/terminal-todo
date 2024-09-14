@@ -2,6 +2,7 @@
 #include "tui/component.h"
 #include "tui/components/base.h"
 #include "tui/core.h"
+#include "tui/focus.h"
 #include "tui/input.h"
 #include "tui/utility.h"
 #include "types.h"
@@ -56,6 +57,10 @@ int main(void) {
     position_component(&tbox.cdata, p.cdata.x + 2, p.cdata.y + 1);
     // tbox.text = "this is textbox text";
 
+    textbox other_tbox;
+    initialize_component(&other_tbox, 0x3);
+    position_component(&other_tbox.cdata, 32, 32);
+
     input_handler ih;
     ih.callback = testfunc;
     // ih.callback();
@@ -66,6 +71,12 @@ int main(void) {
     int numKeys = 0;
     // render(&l, 0x1);
     // printf("%s", l.text);
+
+    focus_manager fm;
+    initialize_focus_manager(&fm, 2);
+
+    fm.focusable_components[0] = (void *)&tbox;
+    fm.focusable_components[1] = (void *)&other_tbox;
 
     fill_with_color(background_c()); // 0x282828
     set_text_color(foreground_c());  // 0xCC241D
@@ -87,17 +98,38 @@ int main(void) {
                 fputs(tbox.text, fptr);
                 fclose(fptr);
             }
+            release_focus_manager_resources(&fm);
             release_textbox_resources(&tbox);
             break;
+        }
+
+        if (key == 'f') {
+            fm.current_focus_index++;
+            fm.current_focus_index %= fm.num_components;
         }
 
         if (key > 0) {
             ih.callback();
             numKeys++;
 
+            int fmtypecode =
+                ((struct component_data *)(fm.focusable_components[0]))
+                    ->component_typecode;
+
+            printf("fm typecodfe is %i", fmtypecode);
+
+            //            printf("focus manager first element typecode is %i",
+            //                   ((struct component_data
+            //                   *)(&fm.focusable_components[0]))
+            //                   ->component_typecode);
+
             expurgate(&p);
 
-            tbox.cdata.handle_key_input(&tbox, key);
+            struct component_data *focused_cdata =
+                (struct component_data
+                     *)(fm.focusable_components[fm.current_focus_index]);
+
+            focused_cdata->handle_key_input(focused_cdata->full_component, key);
 
             // p.width++;
 
@@ -109,6 +141,7 @@ int main(void) {
             set_text_color(red_c());
             render(&tbox);
             set_text_color(foreground_c());
+            render(&other_tbox);
 
             if (key == 'p') {
                 expurgate(&tbox);
