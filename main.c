@@ -73,10 +73,11 @@ int main(void) {
     // printf("%s", l.text);
 
     focus_manager fm;
-    initialize_focus_manager(&fm, 2);
+    initialize_focus_manager(&fm, 1);
 
     fm.focusable_components[0] = (void *)&tbox;
-    fm.focusable_components[1] = (void *)&other_tbox;
+    // fm.focusable_components[1] = (void *)&other_tbox;
+    add_component_to_focus_list(&fm, &other_tbox.cdata);
 
     fill_with_color(background_c()); // 0x282828
     set_text_color(foreground_c());  // 0xCC241D
@@ -129,7 +130,8 @@ int main(void) {
                 (struct component_data
                      *)(fm.focusable_components[fm.current_focus_index]);
 
-            focused_cdata->handle_key_input(focused_cdata->full_component, key);
+            focused_cdata->handle_key_input(
+                get_currently_focused_component(&fm), key);
 
             // p.width++;
 
