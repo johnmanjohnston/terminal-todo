@@ -3,6 +3,7 @@
 #include "tui/components/base.h"
 #include "tui/core.h"
 #include "tui/input.h"
+#include "tui/utility.h"
 #include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,18 +42,18 @@ int main(void) {
 
     label l;
     initialize_component(&l, 0x1);
-    position_component(&l.cdata, 5, 7);
-    l.text = "this is some text inside a label";
+    l.text = "this is a label :)";
+    position_component(&l.cdata, 2 + (get_terminal_width()) / 2, 30);
 
     panel p;
     initialize_component(&p, 0x2);
-    position_component(&p.cdata, (get_terminal_width() / 2), 20);
-    p.height = 5;
-    p.width = 7;
+    position_component(&p.cdata, (get_terminal_width() / 2), 2);
+    p.height = 16;
+    p.width = 32;
 
     textbox tbox;
     initialize_component(&tbox, 0x3);
-    position_component(&tbox.cdata, 30, 30);
+    position_component(&tbox.cdata, p.cdata.x + 2, p.cdata.y + 1);
     // tbox.text = "this is textbox text";
 
     input_handler ih;
@@ -66,14 +67,14 @@ int main(void) {
     // render(&l, 0x1);
     // printf("%s", l.text);
 
-    fill_with_color(hex_c(0x282828)); // 0x282828
-    set_text_color(hex_c(0xCC241D));  // 0xCC241D
+    fill_with_color(background_c()); // 0x282828
+    set_text_color(foreground_c());  // 0xCC241D
 
     // l.cdata.render(l);
     while (1) {
         tick++;
         key = input_loop();
-        position_component(&p.cdata, (get_terminal_width() / 2), 20);
+
         if (key == 'q') {
 
             FILE *fptr;
@@ -83,8 +84,6 @@ int main(void) {
                 set_cursor_position(1, 1);
                 printf("fptr is NULL");
             } else {
-                // fprintf(fptr, "%s", tbox.text);
-                // fwrite(tbox.text, 1, strlen(tbox.text), fptr);
                 fputs(tbox.text, fptr);
                 fclose(fptr);
             }
@@ -100,13 +99,16 @@ int main(void) {
 
             tbox.cdata.handle_key_input(&tbox, key);
 
-            p.width++;
-
-            set_cursor_position(0, 0);
+            // p.width++;
 
             render(&l);
             render(&p);
+            draw_horizontal_line(p.cdata.x, p.cdata.y + 2, p.width, NULL, NULL,
+                                 NULL);
+
+            set_text_color(red_c());
             render(&tbox);
+            set_text_color(foreground_c());
 
             if (key == 'p') {
                 expurgate(&tbox);

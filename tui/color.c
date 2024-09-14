@@ -18,6 +18,8 @@ color rgb_c(unsigned int r, unsigned int g, unsigned int b) {
     return retval;
 }
 
+void ansi_reset() { printf("\033[m"); }
+
 void set_text_color(color c) { printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b); }
 
 void fill_with_color(color c) {
@@ -30,3 +32,9 @@ void fill_with_color(color c) {
         }
     }
 }
+
+// theme
+// yoink gruvbox colors: https://github.com/morhetz/gruvbox
+color background_c() { return hex_c(0x282828); }
+color foreground_c() { return hex_c(0xf9f5d7); }
+color red_c() { return hex_c(0xfb4934); }

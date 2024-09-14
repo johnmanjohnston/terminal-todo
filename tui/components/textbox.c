@@ -43,13 +43,17 @@ void handle_textbox_key_input(void *component, char key) {
 
 void render_textbox(textbox t) {
     set_cursor_position(t.cdata.x, t.cdata.y);
-    printf("Textbox: %s and the typecode is %i", t.text,
-           t.cdata.component_typecode);
+    for (int i = 0; i < strlen(t.text) + 1; i++) {
+        printf(" ");
+    }
+
+    set_cursor_position(t.cdata.x, t.cdata.y);
+    printf("%s", t.text);
 }
 
 void erase_textbox(textbox t) {
     set_cursor_position(t.cdata.x, t.cdata.y);
-    for (int i = 0; i < strlen(t.text) + 9; i++) {
+    for (int i = 0; i < strlen(t.text); i++) {
         printf(" ");
     }
 }

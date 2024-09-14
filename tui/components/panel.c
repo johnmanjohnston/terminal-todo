@@ -3,8 +3,6 @@
 #include <stdio.h>
 
 void render_panel(panel p) {
-    // TODO: figure out how to actually draw a panel
-
     // draw top line and top corners
     set_cursor_position(p.cdata.x, p.cdata.y);
     for (int i = 0; i < p.width; i++) {
