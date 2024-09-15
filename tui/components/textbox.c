@@ -34,8 +34,8 @@ void handle_textbox_key_input(void *component, char key) {
         t->text[text_length] = key;
         t->text[text_length + 1] = '\0';
 
-        printf("length of text is %d, the latest charcode is %d",
-               (int)(strlen(t->text)), (int)key);
+        //        printf("length of text is %d, the latest charcode is %d",
+        //               (int)(strlen(t->text)), (int)key);
     } else {
         printf("textbox text exceeding buffer size");
     }
@@ -56,6 +56,15 @@ void erase_textbox(textbox t) {
     for (int i = 0; i < strlen(t.text); i++) {
         printf(" ");
     }
+}
+
+void textbox_blur(void *component) {
+    set_cursor_position(0, 2);
+    printf("TEXTXBOX BLUR random: %i", rand() % 100);
+}
+void textbox_focus(void *component) {
+    set_cursor_position(0, 3);
+    printf("TETXBOTX FOCUS random: %i", rand() % 100);
 }
 
 void release_textbox_resources(textbox *t) { free(t->text); }

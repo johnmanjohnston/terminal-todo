@@ -14,8 +14,8 @@ void set_terminal_config(void) {
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 
     // non blocking input
-    int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+    //     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+    // fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
 
     printf("\e[?25l");
 }

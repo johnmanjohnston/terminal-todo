@@ -56,14 +56,15 @@ int main(void) {
     initialize_component(&tbox, 0x3);
     position_component(&tbox.cdata, p.cdata.x + 2, p.cdata.y + 1);
     // tbox.text = "this is textbox text";
+    // strcpy(tbox.text, "this is some textbox text");
 
     textbox other_tbox;
     initialize_component(&other_tbox, 0x3);
     position_component(&other_tbox.cdata, 32, 32);
 
-    input_handler ih;
-    ih.callback = testfunc;
-    // ih.callback();
+    textbox tertiary_textbox;
+    initialize_component(&tertiary_textbox, 0x3);
+    position_component(&tertiary_textbox.cdata, 28, 28);
 
     int tick = 0;
     char key = 0;
@@ -73,16 +74,17 @@ int main(void) {
     // printf("%s", l.text);
 
     focus_manager fm;
-    initialize_focus_manager(&fm, 1);
+    initialize_focus_manager(&fm, 0);
 
-    fm.focusable_components[0] = (void *)&tbox;
+    //    fm.focusable_components[0] = (void *)&tbox;
     // fm.focusable_components[1] = (void *)&other_tbox;
     add_component_to_focus_list(&fm, &other_tbox.cdata);
+    add_component_to_focus_list(&fm, &tbox.cdata);
+    add_component_to_focus_list(&fm, &tertiary_textbox.cdata);
 
     fill_with_color(background_c()); // 0x282828
     set_text_color(foreground_c());  // 0xCC241D
 
-    // l.cdata.render(l);
     while (1) {
         tick++;
         key = input_loop();
@@ -104,57 +106,52 @@ int main(void) {
             break;
         }
 
-        if (key == 'f') {
-            fm.current_focus_index++;
-            fm.current_focus_index %= fm.num_components;
-        }
-
-        if (key > 0) {
-            ih.callback();
-            numKeys++;
-
-            int fmtypecode =
-                ((struct component_data *)(fm.focusable_components[0]))
-                    ->component_typecode;
-
-            printf("fm typecodfe is %i", fmtypecode);
-
-            //            printf("focus manager first element typecode is %i",
-            //                   ((struct component_data
-            //                   *)(&fm.focusable_components[0]))
-            //                   ->component_typecode);
-
-            expurgate(&p);
-
+        if (key == '\t') {
             struct component_data *focused_cdata =
                 (struct component_data
                      *)(fm.focusable_components[fm.current_focus_index]);
 
-            focused_cdata->handle_key_input(
-                get_currently_focused_component(&fm), key);
+            focused_cdata->on_blur(get_currently_focused_component(&fm));
 
-            // p.width++;
+            fm.current_focus_index++;
+            fm.current_focus_index %= fm.num_components;
 
+            focused_cdata =
+                (struct component_data
+                     *)(fm.focusable_components[fm.current_focus_index]);
+
+            focused_cdata->on_focus(get_currently_focused_component(&fm));
+        }
+
+        if (key > 0) {
+            numKeys++;
+
+            // draw some debug information on the top left
+            set_cursor_position(0, 0);
+            printf("current focus index is %d", fm.current_focus_index);
+
+            if (key != '\t') {
+                struct component_data *focused_cdata =
+                    (struct component_data
+                         *)(fm.focusable_components[fm.current_focus_index]);
+
+                focused_cdata->handle_key_input(
+                    get_currently_focused_component(&fm), key);
+            }
             render(&l);
             render(&p);
             draw_horizontal_line(p.cdata.x, p.cdata.y + 2, p.width, NULL, NULL,
                                  NULL);
 
-            set_text_color(red_c());
             render(&tbox);
-            set_text_color(foreground_c());
             render(&other_tbox);
+            render(&tertiary_textbox);
 
             if (key == 'p') {
                 expurgate(&tbox);
                 expurgate(&l);
             }
         }
-        set_cursor_position(20, 20);
-        printf("num keys: %i", numKeys);
-
-        set_cursor_position(10, 10);
-        printf("%i", tick);
     }
 
     reset_terminal_config();

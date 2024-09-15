@@ -31,7 +31,19 @@ void add_component_to_focus_list(focus_manager *fm,
 // FIXME: this function does not work as expected
 void remove_component_from_focus_list(focus_manager *fm,
                                       struct component_data *cdata) {
-    fm->focusable_components[fm->num_components - 1] = NULL;
+    int cdata_index = -1;
+
+    for (int i = 0; i < fm->num_components; i++) {
+        if (fm->focusable_components[i] == cdata) {
+            cdata_index = i;
+            break;
+        }
+    }
+
+    for (int i = 1 + cdata_index; i < fm->num_components - 1; i++) {
+        fm->focusable_components[i - 1] = fm->focusable_components[i];
+    }
+
     fm->num_components--;
     fm->focusable_components =
         realloc(fm->focusable_components,
@@ -43,7 +55,5 @@ void *get_currently_focused_component(focus_manager *fm) {
         (struct component_data
              *)(fm->focusable_components[fm->current_focus_index]);
 
-    void *retval = cdata->full_component;
-
-    return retval;
+    return cdata->full_component;
 }

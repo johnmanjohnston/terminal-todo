@@ -43,6 +43,8 @@ void initialize_component(void *c, int typecode) {
         ((textbox *)(c))->text = "UNSET TEXT";
         initialize_textbox(((textbox *)(c)));
         cdata->handle_key_input = handle_textbox_key_input;
+        cdata->on_blur = textbox_blur;
+        cdata->on_focus = textbox_focus;
     }
 }
 
