@@ -107,20 +107,7 @@ int main(void) {
         }
 
         if (key == '\t') {
-            struct component_data *focused_cdata =
-                (struct component_data
-                     *)(fm.focusable_components[fm.current_focus_index]);
-
-            focused_cdata->on_blur(get_currently_focused_component(&fm));
-
-            fm.current_focus_index++;
-            fm.current_focus_index %= fm.num_components;
-
-            focused_cdata =
-                (struct component_data
-                     *)(fm.focusable_components[fm.current_focus_index]);
-
-            focused_cdata->on_focus(get_currently_focused_component(&fm));
+            increment_focus(&fm);
         }
 
         if (key > 0) {
@@ -131,13 +118,9 @@ int main(void) {
             printf("current focus index is %d", fm.current_focus_index);
 
             if (key != '\t') {
-                struct component_data *focused_cdata =
-                    (struct component_data
-                         *)(fm.focusable_components[fm.current_focus_index]);
-
-                focused_cdata->handle_key_input(
-                    get_currently_focused_component(&fm), key);
+                send_key_input_to_focused_component(&fm, key);
             }
+
             render(&l);
             render(&p);
             draw_horizontal_line(p.cdata.x, p.cdata.y + 2, p.width, NULL, NULL,

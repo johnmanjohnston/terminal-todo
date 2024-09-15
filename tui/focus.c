@@ -57,3 +57,27 @@ void *get_currently_focused_component(focus_manager *fm) {
 
     return cdata->full_component;
 }
+
+void increment_focus(focus_manager *fm) {
+    struct component_data *focused_cdata =
+        (struct component_data
+             *)(fm->focusable_components[fm->current_focus_index]);
+
+    focused_cdata->on_blur(get_currently_focused_component(fm));
+
+    fm->current_focus_index++;
+    fm->current_focus_index %= fm->num_components;
+
+    focused_cdata = (struct component_data
+                         *)(fm->focusable_components[fm->current_focus_index]);
+
+    focused_cdata->on_focus(get_currently_focused_component(fm));
+}
+
+void send_key_input_to_focused_component(focus_manager *fm, char key) {
+    struct component_data *focused_cdata =
+        (struct component_data
+             *)(fm->focusable_components[fm->current_focus_index]);
+
+    focused_cdata->handle_key_input(get_currently_focused_component(fm), key);
+}
