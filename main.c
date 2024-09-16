@@ -41,6 +41,7 @@ int main(void) {
     set_terminal_config();
     clear_terminal();
 
+    // INFO: creation and initialization of components
     label l;
     initialize_component(&l, 0x1);
     l.text = "this is a label :)";
@@ -51,6 +52,19 @@ int main(void) {
     position_component(&p.cdata, (get_terminal_width() / 2), 2);
     p.height = 16;
     p.width = 32;
+
+    panel second_panel;
+    initialize_component(&second_panel, 0x2);
+    position_component(&second_panel.cdata, (get_terminal_width() / 3), 2);
+    second_panel.height = 16;
+    second_panel.width = 32;
+
+    panel third_panel;
+    initialize_component(&third_panel, 0x2);
+    position_component(&third_panel.cdata, 30,
+                       2); // TODO: let the x value set procedurally
+    third_panel.height = 16;
+    third_panel.width = 32;
 
     textbox tbox;
     initialize_component(&tbox, 0x3);
@@ -76,14 +90,19 @@ int main(void) {
     focus_manager fm;
     initialize_focus_manager(&fm, 0);
 
+    // INFO: component focus
+
     //    fm.focusable_components[0] = (void *)&tbox;
     // fm.focusable_components[1] = (void *)&other_tbox;
-    add_component_to_focus_list(&fm, &other_tbox.cdata);
-    add_component_to_focus_list(&fm, &tbox.cdata);
-    add_component_to_focus_list(&fm, &tertiary_textbox.cdata);
+    //    add_component_to_focus_list(&fm, &other_tbox.cdata);
+    // add_component_to_focus_list(&fm, &tbox.cdata);
+    // add_component_to_focus_list(&fm, &tertiary_textbox.cdata);
 
-    fill_with_color(background_c()); // 0x282828
-    set_text_color(foreground_c());  // 0xCC241D
+    add_component_to_focus_list(&fm, &other_tbox.cdata);
+    add_component_to_focus_list_with_index(&fm, &tbox.cdata, 0);
+
+    // fill_with_color(background_c()); // 0x282828
+    set_text_color(foreground_c()); // 0xCC241D
 
     while (1) {
         tick++;
@@ -106,6 +125,14 @@ int main(void) {
             break;
         }
 
+        if (key == 'p') {
+            // fm.focusable_components[2] = fm.focusable_components[1];
+            // remove_component_from_focus_list(&fm, &other_tbox.cdata);
+            add_component_to_focus_list_with_index(&fm, &tertiary_textbox.cdata,
+                                                   0);
+            increment_focus(&fm);
+        }
+
         if (key == '\t') {
             increment_focus(&fm);
         }
@@ -113,9 +140,16 @@ int main(void) {
         if (key > 0) {
             numKeys++;
 
-            // draw some debug information on the top left
+            // INFO: draw some debug info
             set_cursor_position(0, 0);
             printf("current focus index is %d", fm.current_focus_index);
+
+            for (int i = 0; i < fm.num_components; i++) {
+
+                set_cursor_position(0, 40 + i);
+                textbox *t = (textbox *)fm.focusable_components[i];
+                printf("textbox with text %s is at focus index %d", t->text, i);
+            }
 
             if (key != '\t') {
                 send_key_input_to_focused_component(&fm, key);
@@ -123,8 +157,8 @@ int main(void) {
 
             render(&l);
             render(&p);
-            draw_horizontal_line(p.cdata.x, p.cdata.y + 2, p.width, NULL, NULL,
-                                 NULL);
+            render(&second_panel);
+            render(&third_panel);
 
             render(&tbox);
             render(&other_tbox);

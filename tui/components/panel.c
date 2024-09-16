@@ -1,5 +1,6 @@
 #include "panel.h"
 #include "../core.h"
+#include "../utility.h"
 #include <stdio.h>
 
 void render_panel(panel p) {
@@ -33,6 +34,8 @@ void render_panel(panel p) {
         else
             printf("\u2500");
     }
+
+    draw_horizontal_line(p.cdata.x, p.cdata.y + 2, p.width, NULL, NULL, NULL);
 }
 
 void erase_panel(panel p) {
