@@ -8,6 +8,8 @@ struct component_data {
 
     int focusable;   // bool
     int takes_input; // bool
+    int is_focused;  // bool
+
     void (*handle_key_input)(void *component, char key);
     void (*on_focus)(void *component);
     void (*on_blur)(void *component);

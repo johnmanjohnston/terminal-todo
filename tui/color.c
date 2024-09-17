@@ -35,6 +35,6 @@ void fill_with_color(color c) {
 
 // theme
 // yoink gruvbox colors: https://github.com/morhetz/gruvbox
-color background_c() { return hex_c(0x282828); }
+color background_c() { return hex_c(0x000000); }
 color foreground_c() { return hex_c(0xf9f5d7); }
 color red_c() { return hex_c(0xfb4934); }

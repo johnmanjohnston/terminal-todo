@@ -1,3 +1,4 @@
+#include "parser.h"
 #include "tui/color.h"
 #include "tui/component.h"
 #include "tui/components/base.h"
@@ -8,7 +9,6 @@
 #include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 #include "tui/components/label.h"
@@ -49,20 +49,20 @@ int main(void) {
 
     panel p;
     initialize_component(&p, 0x2);
-    position_component(&p.cdata, (get_terminal_width() / 2), 2);
+    position_component(&p.cdata, (get_terminal_width() / 2) - (16 * 3), 2);
     p.height = 16;
     p.width = 32;
 
     panel second_panel;
     initialize_component(&second_panel, 0x2);
-    position_component(&second_panel.cdata, (get_terminal_width() / 3), 2);
+    position_component(&second_panel.cdata, (get_terminal_width() / 2) - 16, 2);
     second_panel.height = 16;
     second_panel.width = 32;
 
     panel third_panel;
     initialize_component(&third_panel, 0x2);
-    position_component(&third_panel.cdata, 30,
-                       2); // TODO: let the x value set procedurally
+    position_component(&third_panel.cdata,
+                       (get_terminal_width() / 2) + (16 * 1), 2);
     third_panel.height = 16;
     third_panel.width = 32;
 
@@ -101,8 +101,8 @@ int main(void) {
     add_component_to_focus_list(&fm, &other_tbox.cdata);
     add_component_to_focus_list_with_index(&fm, &tbox.cdata, 0);
 
-    // fill_with_color(background_c()); // 0x282828
-    set_text_color(foreground_c()); // 0xCC241D
+    fill_with_color(background_c()); // 0x282828
+    set_text_color(foreground_c());  // 0xCC241D
 
     while (1) {
         tick++;
@@ -110,6 +110,7 @@ int main(void) {
 
         if (key == 'q') {
 
+            /*
             FILE *fptr;
             fptr = fopen("../tasks.txt", "w");
 
@@ -120,6 +121,7 @@ int main(void) {
                 fputs(tbox.text, fptr);
                 fclose(fptr);
             }
+            */
             release_focus_manager_resources(&fm);
             release_textbox_resources(&tbox);
             break;
@@ -129,7 +131,7 @@ int main(void) {
             // fm.focusable_components[2] = fm.focusable_components[1];
             // remove_component_from_focus_list(&fm, &other_tbox.cdata);
             add_component_to_focus_list_with_index(&fm, &tertiary_textbox.cdata,
-                                                   0);
+                                                   1);
             increment_focus(&fm);
         }
 
@@ -139,6 +141,7 @@ int main(void) {
 
         if (key > 0) {
             numKeys++;
+            clear_terminal();
 
             // INFO: draw some debug info
             set_cursor_position(0, 0);
