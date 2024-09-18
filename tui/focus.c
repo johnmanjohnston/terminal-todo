@@ -3,6 +3,7 @@
 #include "core.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // TODO: check for failure of memory allocation functions
 
@@ -37,6 +38,10 @@ void add_component_to_focus_list_with_index(focus_manager *fm,
 
 void add_component_to_focus_list(focus_manager *fm,
                                  struct component_data *cdata) {
+    set_cursor_position(2, 5 + fm->num_components);
+    printf("adding a component to focus list. typecode is %d",
+           cdata->component_typecode);
+
     fm->num_components++;
     fm->focusable_components =
         realloc(fm->focusable_components,
@@ -86,7 +91,8 @@ void increment_focus(focus_manager *fm) {
         (struct component_data
              *)(fm->focusable_components[fm->current_focus_index]);
 
-    focused_cdata->on_blur(get_currently_focused_component(fm));
+    if (focused_cdata->on_blur != NULL)
+        focused_cdata->on_blur(get_currently_focused_component(fm));
 
     fm->current_focus_index++;
     fm->current_focus_index %= fm->num_components;
@@ -94,7 +100,8 @@ void increment_focus(focus_manager *fm) {
     focused_cdata = (struct component_data
                          *)(fm->focusable_components[fm->current_focus_index]);
 
-    focused_cdata->on_focus(get_currently_focused_component(fm));
+    if (focused_cdata->on_focus != NULL)
+        focused_cdata->on_focus(get_currently_focused_component(fm));
 
     printf("increment_focus() finished");
 }
@@ -104,5 +111,7 @@ void send_key_input_to_focused_component(focus_manager *fm, char key) {
         (struct component_data
              *)(fm->focusable_components[fm->current_focus_index]);
 
-    focused_cdata->handle_key_input(get_currently_focused_component(fm), key);
+    if (focused_cdata->handle_key_input != NULL)
+        focused_cdata->handle_key_input(get_currently_focused_component(fm),
+                                        key);
 }

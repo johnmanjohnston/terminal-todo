@@ -1,4 +1,3 @@
-#include "parser.h"
 #include "tui/color.h"
 #include "tui/component.h"
 #include "tui/components/base.h"
@@ -14,6 +13,8 @@
 #include "tui/components/label.h"
 #include "tui/components/panel.h"
 #include "tui/components/textbox.h"
+
+#include "tui/extended/group_component.h"
 
 void testfunc(void) { printf("this is called from testfunc()"); }
 
@@ -80,6 +81,12 @@ int main(void) {
     initialize_component(&tertiary_textbox, 0x3);
     position_component(&tertiary_textbox.cdata, 28, 28);
 
+    group_component gc;
+    gc.panel.width = 20;
+    gc.panel.height = 10;
+    position_component(&gc.cdata, 3, 20);
+    initialize_component(&gc, 0x10);
+
     int tick = 0;
     char key = 0;
 
@@ -98,11 +105,12 @@ int main(void) {
     // add_component_to_focus_list(&fm, &tbox.cdata);
     // add_component_to_focus_list(&fm, &tertiary_textbox.cdata);
 
-    add_component_to_focus_list(&fm, &other_tbox.cdata);
-    add_component_to_focus_list_with_index(&fm, &tbox.cdata, 0);
-
     fill_with_color(background_c()); // 0x282828
     set_text_color(foreground_c());  // 0xCC241D
+
+    add_component_to_focus_list(&fm, &other_tbox.cdata);
+    add_component_to_focus_list(&fm, &gc.cdata);
+    add_component_to_focus_list_with_index(&fm, &tbox.cdata, 0);
 
     while (1) {
         tick++;
@@ -124,6 +132,7 @@ int main(void) {
             */
             release_focus_manager_resources(&fm);
             release_textbox_resources(&tbox);
+            release_group_component_resources(&gc);
             break;
         }
 
@@ -147,12 +156,16 @@ int main(void) {
             set_cursor_position(0, 0);
             printf("current focus index is %d", fm.current_focus_index);
 
+            // ASDKL;FHJASDL; KFH ASKLD JFHASDKF JH THIS WAS CUAINSG SEGFAULT
+            // AND I DIDNI'T KNOW I WASTED SO MUCH TIME AKLSDJFHKLAJSDFH
+            /*
             for (int i = 0; i < fm.num_components; i++) {
 
                 set_cursor_position(0, 40 + i);
                 textbox *t = (textbox *)fm.focusable_components[i];
                 printf("textbox with text %s is at focus index %d", t->text, i);
             }
+            */
 
             if (key != '\t') {
                 send_key_input_to_focused_component(&fm, key);
@@ -166,6 +179,8 @@ int main(void) {
             render(&tbox);
             render(&other_tbox);
             render(&tertiary_textbox);
+
+            render(&gc);
 
             if (key == 'p') {
                 expurgate(&tbox);

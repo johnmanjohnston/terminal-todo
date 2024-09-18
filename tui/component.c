@@ -4,11 +4,13 @@
 #include "components/panel.h"
 #include "components/textbox.h"
 #include "core.h"
+#include "extended/group_component.h"
 
 // using hex makes me feel cool
 #define TYPECODE_LABEL 0x1
 #define TYPECODE_PANEL 0x2
 #define TYPECODE_TEXTBOX 0x3
+#define TYPECODE_GROUP_COMPONENT 0x10
 
 struct component_data *component_to_cdata(void *component) {
     struct component_data *c = (struct component_data *)component;
@@ -46,6 +48,15 @@ void initialize_component(void *c, int typecode) {
         cdata->on_blur = textbox_blur;
         cdata->on_focus = textbox_focus;
     }
+
+    if (typecode == TYPECODE_GROUP_COMPONENT) {
+        set_cdata_to_interactable(cdata);
+        set_cdata_to_interactable(&((group_component *)(c))->textbox.cdata);
+        cdata->on_blur = group_component_blur;
+        cdata->on_focus = group_component_focus;
+        cdata->handle_key_input = handle_group_component_key_input;
+        initialize_group_component(((group_component *)(c)));
+    }
 }
 
 void render(void *component) {
@@ -62,6 +73,10 @@ void render(void *component) {
     else if (c.component_typecode == TYPECODE_TEXTBOX) {
         render_textbox(*((textbox *)(c.full_component)));
     }
+
+    else if (c.component_typecode == TYPECODE_GROUP_COMPONENT) {
+        render_group_component(*(group_component *)(c.full_component));
+    }
 }
 
 void expurgate(void *component) {
@@ -77,5 +92,9 @@ void expurgate(void *component) {
 
     else if (c.component_typecode == TYPECODE_TEXTBOX) {
         erase_textbox(*((textbox *)(c.full_component)));
+    }
+
+    else if (c.component_typecode == TYPECODE_GROUP_COMPONENT) {
+        erase_group_component(*(group_component *)(c.full_component));
     }
 }
