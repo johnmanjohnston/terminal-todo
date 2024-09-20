@@ -48,6 +48,7 @@ int main(void) {
     l.text = "this is a label :)";
     position_component(&l.cdata, 2 + (get_terminal_width()) / 2, 30);
 
+    /*
     panel p;
     initialize_component(&p, 0x2);
     position_component(&p.cdata, (get_terminal_width() / 2) - (16 * 3), 2);
@@ -67,9 +68,6 @@ int main(void) {
     third_panel.height = 16;
     third_panel.width = 32;
 
-    textbox tbox;
-    initialize_component(&tbox, 0x3);
-    position_component(&tbox.cdata, p.cdata.x + 2, p.cdata.y + 1);
     // tbox.text = "this is textbox text";
     // strcpy(tbox.text, "this is some textbox text");
 
@@ -80,12 +78,26 @@ int main(void) {
     textbox tertiary_textbox;
     initialize_component(&tertiary_textbox, 0x3);
     position_component(&tertiary_textbox.cdata, 28, 28);
+    */
 
     group_component gc;
-    gc.panel.width = 20;
-    gc.panel.height = 10;
-    position_component(&gc.cdata, 3, 20);
+    gc.panel.width = 32;
+    gc.panel.height = 16;
+    position_component(&gc.cdata, (get_terminal_width() / 2) - 16, 2);
     initialize_component(&gc, 0x10);
+
+    group_component other_gc;
+    other_gc.panel.width = 32;
+    other_gc.panel.height = 16;
+    position_component(&other_gc.cdata, (get_terminal_width() / 2) - (16 * 3),
+                       2);
+    initialize_component(&other_gc, 0x10);
+
+    group_component t_gc;
+    t_gc.panel.width = 32;
+    t_gc.panel.height = 16;
+    position_component(&t_gc.cdata, (get_terminal_width() / 2) + 16, 2);
+    initialize_component(&t_gc, 0x10);
 
     int tick = 0;
     char key = 0;
@@ -108,9 +120,9 @@ int main(void) {
     fill_with_color(background_c()); // 0x282828
     set_text_color(foreground_c());  // 0xCC241D
 
-    add_component_to_focus_list(&fm, &other_tbox.cdata);
+    add_component_to_focus_list(&fm, &other_gc.cdata);
     add_component_to_focus_list(&fm, &gc.cdata);
-    add_component_to_focus_list_with_index(&fm, &tbox.cdata, 0);
+    add_component_to_focus_list(&fm, &t_gc.cdata);
 
     while (1) {
         tick++;
@@ -131,17 +143,10 @@ int main(void) {
             }
             */
             release_focus_manager_resources(&fm);
-            release_textbox_resources(&tbox);
             release_group_component_resources(&gc);
+            release_group_component_resources(&other_gc);
+            release_group_component_resources(&t_gc);
             break;
-        }
-
-        if (key == 'p') {
-            // fm.focusable_components[2] = fm.focusable_components[1];
-            // remove_component_from_focus_list(&fm, &other_tbox.cdata);
-            add_component_to_focus_list_with_index(&fm, &tertiary_textbox.cdata,
-                                                   1);
-            increment_focus(&fm);
         }
 
         if (key == '\t') {
@@ -150,7 +155,7 @@ int main(void) {
 
         if (key > 0) {
             numKeys++;
-            clear_terminal();
+            // clear_terminal();
 
             // INFO: draw some debug info
             set_cursor_position(0, 0);
@@ -172,18 +177,12 @@ int main(void) {
             }
 
             render(&l);
-            render(&p);
-            render(&second_panel);
-            render(&third_panel);
-
-            render(&tbox);
-            render(&other_tbox);
-            render(&tertiary_textbox);
 
             render(&gc);
+            render(&other_gc);
+            render(&t_gc);
 
             if (key == 'p') {
-                expurgate(&tbox);
                 expurgate(&l);
             }
         }

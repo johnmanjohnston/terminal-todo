@@ -15,3 +15,6 @@ void ansi_reset();
 color background_c();
 color foreground_c();
 color red_c();
+color green_c();
+color blue_c();
+color yellow_c();

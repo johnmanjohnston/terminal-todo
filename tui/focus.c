@@ -1,7 +1,6 @@
 #include "focus.h"
 #include "components/base.h"
 #include "core.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -39,8 +38,6 @@ void add_component_to_focus_list_with_index(focus_manager *fm,
 void add_component_to_focus_list(focus_manager *fm,
                                  struct component_data *cdata) {
     set_cursor_position(2, 5 + fm->num_components);
-    printf("adding a component to focus list. typecode is %d",
-           cdata->component_typecode);
 
     fm->num_components++;
     fm->focusable_components =
@@ -85,7 +82,6 @@ void *get_currently_focused_component(focus_manager *fm) {
 
 void increment_focus(focus_manager *fm) {
     set_cursor_position(20, 1);
-    printf("incrementing_focus() starting...");
 
     struct component_data *focused_cdata =
         (struct component_data
@@ -93,6 +89,8 @@ void increment_focus(focus_manager *fm) {
 
     if (focused_cdata->on_blur != NULL)
         focused_cdata->on_blur(get_currently_focused_component(fm));
+
+    focused_cdata->is_focused = 0;
 
     fm->current_focus_index++;
     fm->current_focus_index %= fm->num_components;
@@ -103,7 +101,7 @@ void increment_focus(focus_manager *fm) {
     if (focused_cdata->on_focus != NULL)
         focused_cdata->on_focus(get_currently_focused_component(fm));
 
-    printf("increment_focus() finished");
+    focused_cdata->is_focused = 1;
 }
 
 void send_key_input_to_focused_component(focus_manager *fm, char key) {

@@ -38,3 +38,8 @@ void fill_with_color(color c) {
 color background_c() { return hex_c(0x000000); }
 color foreground_c() { return hex_c(0xf9f5d7); }
 color red_c() { return hex_c(0xfb4934); }
+
+// TODO: fill in these colors
+color green_c() { return hex_c(0x000000); }
+color blue_c() { return hex_c(0x000000); }
+color yellow_c() { return hex_c(0x00000); }

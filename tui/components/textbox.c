@@ -63,7 +63,7 @@ void textbox_blur(void *component) {
     printf("TEXTXBOX BLUR random: %i", rand() % 100);
 }
 void textbox_focus(void *component) {
-    set_cursor_position(0, 3);
+    set_cursor_position(0, 2);
     printf("TETXBOTX FOCUS random: %i", rand() % 100);
 }
 

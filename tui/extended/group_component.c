@@ -1,11 +1,18 @@
 #include "group_component.h"
+#include "../color.h"
 #include "../component.h"
-#include <string.h>
 
 // rendering
 void render_group_component(group_component g) {
+    if (g.cdata.is_focused)
+        set_text_color(hex_c(0xe5e5e5));
+    else
+        set_text_color(hex_c(0x8f8f8f));
+
     render_textbox(g.textbox);
     render_panel(g.panel);
+
+    set_text_color(foreground_c());
 }
 void erase_group_component(group_component g) {
     erase_textbox(g.textbox);
