@@ -15,6 +15,7 @@
 #include "tui/components/textbox.h"
 
 #include "tui/extended/group_component.h"
+#include "tui/extended/task_component.h"
 
 void testfunc(void) { printf("this is called from testfunc()"); }
 
@@ -99,6 +100,12 @@ int main(void) {
     position_component(&t_gc.cdata, (get_terminal_width() / 2) + 16, 2);
     initialize_component(&t_gc, 0x10);
 
+    task_component task_1;
+    task_1.panel.width = 30;
+    task_1.panel.height = 3;
+    position_component(&task_1.cdata, 2, 2);
+    initialize_component(&task_1, 0x11);
+
     int tick = 0;
     char key = 0;
 
@@ -123,6 +130,7 @@ int main(void) {
     add_component_to_focus_list(&fm, &other_gc.cdata);
     add_component_to_focus_list(&fm, &gc.cdata);
     add_component_to_focus_list(&fm, &t_gc.cdata);
+    add_component_to_focus_list(&fm, &task_1.cdata);
 
     while (1) {
         tick++;
@@ -143,9 +151,12 @@ int main(void) {
             }
             */
             release_focus_manager_resources(&fm);
+
             release_group_component_resources(&gc);
             release_group_component_resources(&other_gc);
             release_group_component_resources(&t_gc);
+            release_task_component_resources(&task_1);
+
             break;
         }
 
@@ -181,6 +192,7 @@ int main(void) {
             render(&gc);
             render(&other_gc);
             render(&t_gc);
+            render(&task_1);
 
             if (key == 'p') {
                 expurgate(&l);

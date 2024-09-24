@@ -5,12 +5,14 @@
 #include "components/textbox.h"
 #include "core.h"
 #include "extended/group_component.h"
+#include "extended/task_component.h"
 
 // using hex makes me feel cool
 #define TYPECODE_LABEL 0x1
 #define TYPECODE_PANEL 0x2
 #define TYPECODE_TEXTBOX 0x3
 #define TYPECODE_GROUP_COMPONENT 0x10
+#define TYPECODE_TASK_COMPONENT 0x11
 
 struct component_data *component_to_cdata(void *component) {
     struct component_data *c = (struct component_data *)component;
@@ -57,6 +59,16 @@ void initialize_component(void *c, int typecode) {
         cdata->handle_key_input = handle_group_component_key_input;
         initialize_group_component(((group_component *)(c)));
     }
+
+    // WARN: untested
+    if (typecode == TYPECODE_TASK_COMPONENT) {
+        set_cdata_to_interactable(cdata);
+        set_cdata_to_interactable(&((task_component *)(c))->textbox.cdata);
+        cdata->on_blur = task_component_blur;
+        cdata->on_focus = task_component_focus;
+        cdata->handle_key_input = handle_task_component_key_input;
+        initialize_task_component(((task_component *)(c)));
+    }
 }
 
 void render(void *component) {
@@ -77,6 +89,10 @@ void render(void *component) {
     else if (c.component_typecode == TYPECODE_GROUP_COMPONENT) {
         render_group_component(*(group_component *)(c.full_component));
     }
+
+    else if (c.component_typecode == TYPECODE_TASK_COMPONENT) {
+        render_task_component(*(task_component *)(c.full_component));
+    }
 }
 
 void expurgate(void *component) {
@@ -96,5 +112,9 @@ void expurgate(void *component) {
 
     else if (c.component_typecode == TYPECODE_GROUP_COMPONENT) {
         erase_group_component(*(group_component *)(c.full_component));
+    }
+
+    else if (c.component_typecode == TYPECODE_TASK_COMPONENT) {
+        erase_task_component(*(task_component *)(c.full_component));
     }
 }
