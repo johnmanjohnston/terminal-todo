@@ -49,49 +49,16 @@ int main(void) {
     l.text = "this is a label :)";
     position_component(&l.cdata, 2 + (get_terminal_width()) / 2, 30);
 
-    /*
-    panel p;
-    initialize_component(&p, 0x2);
-    position_component(&p.cdata, (get_terminal_width() / 2) - (16 * 3), 2);
-    p.height = 16;
-    p.width = 32;
-
-    panel second_panel;
-    initialize_component(&second_panel, 0x2);
-    position_component(&second_panel.cdata, (get_terminal_width() / 2) - 16, 2);
-    second_panel.height = 16;
-    second_panel.width = 32;
-
-    panel third_panel;
-    initialize_component(&third_panel, 0x2);
-    position_component(&third_panel.cdata,
-                       (get_terminal_width() / 2) + (16 * 1), 2);
-    third_panel.height = 16;
-    third_panel.width = 32;
-
-    // tbox.text = "this is textbox text";
-    // strcpy(tbox.text, "this is some textbox text");
-
-    textbox other_tbox;
-    initialize_component(&other_tbox, 0x3);
-    position_component(&other_tbox.cdata, 32, 32);
-
-    textbox tertiary_textbox;
-    initialize_component(&tertiary_textbox, 0x3);
-    position_component(&tertiary_textbox.cdata, 28, 28);
-    */
-
     group_component gc;
     gc.panel.width = 32;
     gc.panel.height = 16;
-    position_component(&gc.cdata, (get_terminal_width() / 2) - 16, 2);
+    position_component(&gc.cdata, (get_terminal_width() / 2) - (16 * 3), 2);
     initialize_component(&gc, 0x10);
 
     group_component other_gc;
     other_gc.panel.width = 32;
     other_gc.panel.height = 16;
-    position_component(&other_gc.cdata, (get_terminal_width() / 2) - (16 * 3),
-                       2);
+    position_component(&other_gc.cdata, (get_terminal_width() / 2) - (16), 2);
     initialize_component(&other_gc, 0x10);
 
     group_component t_gc;
@@ -102,35 +69,27 @@ int main(void) {
 
     task_component task_1;
     task_1.panel.width = 30;
-    task_1.panel.height = 2;
+    task_1.panel.height = 1;
     position_component(&task_1.cdata, gc.cdata.x + 1, gc.cdata.y + 2 + 1);
     initialize_component(&task_1, 0x11);
 
     int tick = 0;
     char key = 0;
-
     int numKeys = 0;
-    // render(&l, 0x1);
-    // printf("%s", l.text);
-
-    focus_manager fm;
-    initialize_focus_manager(&fm, 0);
 
     // INFO: component focus
-
-    //    fm.focusable_components[0] = (void *)&tbox;
-    // fm.focusable_components[1] = (void *)&other_tbox;
-    //    add_component_to_focus_list(&fm, &other_tbox.cdata);
-    // add_component_to_focus_list(&fm, &tbox.cdata);
-    // add_component_to_focus_list(&fm, &tertiary_textbox.cdata);
+    focus_manager fm;
+    initialize_focus_manager(&fm, 0);
 
     fill_with_color(background_c()); // 0x282828
     set_text_color(foreground_c());  // 0xCC241D
 
-    add_component_to_focus_list(&fm, &other_gc.cdata);
     add_component_to_focus_list(&fm, &gc.cdata);
+    add_component_to_focus_list(&fm, &other_gc.cdata);
     add_component_to_focus_list(&fm, &t_gc.cdata);
     add_component_to_focus_list(&fm, &task_1.cdata);
+
+    add_task_component_to_group(&gc, &task_1);
 
     while (1) {
         tick++;
@@ -183,6 +142,11 @@ int main(void) {
             }
             */
 
+            task_component *x = (task_component *)gc.task_components[0];
+            set_cursor_position(10, 10);
+            printf("x's typecode is %d and xpos is %d",
+                   x->cdata.component_typecode, x->cdata.x);
+
             if (key != '\t') {
                 send_key_input_to_focused_component(&fm, key);
             }
@@ -196,6 +160,10 @@ int main(void) {
 
             if (key == 'p') {
                 expurgate(&l);
+
+                remove_task_from_group(&gc, &task_1);
+                add_task_component_to_group(&t_gc, &task_1);
+                render(&task_1);
             }
         }
     }

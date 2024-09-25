@@ -23,8 +23,15 @@ void render_task_component(task_component t) {
     else
         set_text_color(hex_c(0x8f8f8f));
 
+    t.panel.cdata.x = t.cdata.x;
+    t.panel.cdata.y = t.cdata.y;
+    t.textbox.cdata.x = t.cdata.x + 1;
+    t.textbox.cdata.y = t.cdata.y + 1;
+
     render_panel(t.panel, 0);
-    render_textbox(t.textbox);
+    render_textbox(
+        t.textbox); // TODO: instead of using render_textbox(), write another
+                    // function to render a textbox which handles line wrapping
 
     set_text_color(foreground_c());
 }
