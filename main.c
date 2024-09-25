@@ -102,8 +102,8 @@ int main(void) {
 
     task_component task_1;
     task_1.panel.width = 30;
-    task_1.panel.height = 3;
-    position_component(&task_1.cdata, 2, 2);
+    task_1.panel.height = 2;
+    position_component(&task_1.cdata, gc.cdata.x + 1, gc.cdata.y + 2 + 1);
     initialize_component(&task_1, 0x11);
 
     int tick = 0;

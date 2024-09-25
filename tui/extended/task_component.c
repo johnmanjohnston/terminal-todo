@@ -23,7 +23,7 @@ void render_task_component(task_component t) {
     else
         set_text_color(hex_c(0x8f8f8f));
 
-    render_panel(t.panel);
+    render_panel(t.panel, 0);
     render_textbox(t.textbox);
 
     set_text_color(foreground_c());
@@ -50,6 +50,7 @@ void initialize_task_component(task_component *t) {
 
     t->textbox.cdata.full_component = (void *)&t->textbox;
     initialize_component(&t->textbox, 0x3);
+    t->cdata.is_focused = 0;
 }
 
 void handle_task_component_key_input(void *component, char key) {

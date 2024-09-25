@@ -3,7 +3,7 @@
 #include "../utility.h"
 #include <stdio.h>
 
-void render_panel(panel p) {
+void render_panel(panel p, int should_draw_horizontal_line) {
     // draw top line and top corners
     set_cursor_position(p.cdata.x, p.cdata.y);
     for (int i = 0; i < p.width; i++) {
@@ -35,7 +35,9 @@ void render_panel(panel p) {
             printf("\u2500");
     }
 
-    draw_horizontal_line(p.cdata.x, p.cdata.y + 2, p.width, NULL, NULL, NULL);
+    if (should_draw_horizontal_line == 1)
+        draw_horizontal_line(p.cdata.x, p.cdata.y + 2, p.width, NULL, NULL,
+                             NULL);
 }
 
 void erase_panel(panel p) {

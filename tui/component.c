@@ -79,7 +79,7 @@ void render(void *component) {
     }
 
     else if (c.component_typecode == TYPECODE_PANEL) {
-        render_panel(*((panel *)(c.full_component)));
+        render_panel(*((panel *)(c.full_component)), 1);
     }
 
     else if (c.component_typecode == TYPECODE_TEXTBOX) {

@@ -10,7 +10,7 @@ void render_group_component(group_component g) {
         set_text_color(hex_c(0x8f8f8f));
 
     render_textbox(g.textbox);
-    render_panel(g.panel);
+    render_panel(g.panel, 1);
 
     set_text_color(foreground_c());
 }
