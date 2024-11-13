@@ -12,7 +12,6 @@
 
 #include "tui/components/label.h"
 #include "tui/components/panel.h"
-#include "tui/components/textbox.h"
 
 #include "tui/extended/group_component.h"
 #include "tui/extended/task_component.h"
@@ -70,8 +69,12 @@ int main(void) {
     task_component task_1;
     task_1.panel.width = 30;
     task_1.panel.height = 1;
-    position_component(&task_1.cdata, gc.cdata.x + 1, gc.cdata.y + 2 + 1);
     initialize_component(&task_1, 0x11);
+
+    task_component task_2;
+    task_2.panel.width = 30;
+    task_2.panel.height = 1;
+    initialize_component(&task_2, 0x11);
 
     int tick = 0;
     char key = 0;
@@ -88,8 +91,10 @@ int main(void) {
     add_component_to_focus_list(&fm, &other_gc.cdata);
     add_component_to_focus_list(&fm, &t_gc.cdata);
     add_component_to_focus_list(&fm, &task_1.cdata);
+    add_component_to_focus_list(&fm, &task_2.cdata);
 
     add_task_component_to_group(&gc, &task_1);
+    add_task_component_to_group(&gc, &task_2);
 
     while (1) {
         tick++;
@@ -115,6 +120,7 @@ int main(void) {
             release_group_component_resources(&other_gc);
             release_group_component_resources(&t_gc);
             release_task_component_resources(&task_1);
+            release_task_component_resources(&task_2);
 
             break;
         }
@@ -142,11 +148,6 @@ int main(void) {
             }
             */
 
-            task_component *x = (task_component *)gc.task_components[0];
-            set_cursor_position(10, 10);
-            printf("x's typecode is %d and xpos is %d",
-                   x->cdata.component_typecode, x->cdata.x);
-
             if (key != '\t') {
                 send_key_input_to_focused_component(&fm, key);
             }
@@ -157,9 +158,12 @@ int main(void) {
             render(&other_gc);
             render(&t_gc);
             render(&task_1);
+            render(&task_2);
 
             if (key == 'p') {
                 expurgate(&l);
+
+                expurgate(&task_1);
 
                 remove_task_from_group(&gc, &task_1);
                 add_task_component_to_group(&t_gc, &task_1);

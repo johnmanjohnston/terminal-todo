@@ -2,21 +2,6 @@
 #include "../color.h"
 #include "../component.h"
 
-/* Functions to implement for a new component:
-// rendering
-void render_COMPONENT_NAME_component(COMPONENT_TYPE);
-void erase_COMPONENT_NAME_component(COMPONENT_TYPE);
-
-// focus (if applicable)
-void COMPONENT_NAME_blur(void *component);
-void COMPONENT_NAME_focus(void *component);
-
-// misc.
-void initialize_COMPONENT_NAME_component(*COMPONENT_TYPE);
-void release_COMPONENT_NAME_resources(*COMPONENT_TYPE); // if applicable
-void handle_COMPONENT_NAME_key_input(void *component, char key);
-*/
-
 void render_task_component(task_component t) {
     if (t.cdata.is_focused)
         set_text_color(hex_c(0xff0000));
@@ -37,6 +22,11 @@ void render_task_component(task_component t) {
 }
 
 void erase_task_component(task_component t) {
+    t.panel.cdata.x = t.cdata.x;
+    t.panel.cdata.y = t.cdata.y;
+    t.textbox.cdata.x = t.cdata.x + 1;
+    t.textbox.cdata.y = t.cdata.y + 1;
+
     erase_panel(t.panel);
     erase_textbox(t.textbox);
 }

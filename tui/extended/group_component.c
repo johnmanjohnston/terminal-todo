@@ -85,7 +85,7 @@ void add_task_component_to_group(group_component *g, task_component *t) {
     // TODO: you will need to change this because of task's textboxes wrapping
     // around and stuff
     t->cdata.x = g->cdata.x + 1;
-    t->cdata.y = g->cdata.y + 1 + 2;
+    t->cdata.y = g->cdata.y + (3 + ((g->task_count - 1) * 3));
 }
 void add_task_component_to_group_with_index(group_component *g,
                                             task_component *t,
@@ -114,7 +114,4 @@ void remove_task_from_group(group_component *g, task_component *t) {
 
         g->task_count--;
     }
-
-    // handle visual changes when removing task from group
-    expurgate(t->cdata.full_component);
 }

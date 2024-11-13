@@ -4,3 +4,8 @@
 .clang-format
 build/
 .cache/
+CMakeCache.txt
+cmake_install_.cmake
+todo_ex
+Makefile
+CMakeFiles/

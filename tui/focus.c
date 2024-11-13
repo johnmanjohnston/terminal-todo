@@ -35,6 +35,8 @@ void add_component_to_focus_list_with_index(focus_manager *fm,
     fm->focusable_components[index] = cdata;
 }
 
+// TODO: make this function take a void* componetn instead of a struct
+// component_data
 void add_component_to_focus_list(focus_manager *fm,
                                  struct component_data *cdata) {
     set_cursor_position(2, 5 + fm->num_components);
